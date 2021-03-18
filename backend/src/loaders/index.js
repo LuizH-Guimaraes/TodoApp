@@ -1,7 +1,7 @@
-const expressLoader = require('./express')
-const dbLoader = require('./db')
+const expressLoader = require("./express");
+const dbLoader = require("./db");
 
 module.exports = (app) => {
-    expressLoader(app)
-    dbLoader()
-}
+  dbLoader();
+  expressLoader(app);
+};
