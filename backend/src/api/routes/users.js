@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const genericCrud = require("./generic/crud");
+const genericCrud = require("../../services/crud");
 
 module.exports = (app) => {
   const route = Router();
