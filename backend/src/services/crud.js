@@ -1,7 +1,9 @@
 const { Container } = require("typedi");
 
-module.exports = (route, tableName) => {
+module.exports = (route, tableName, permission) => {
   const knex = Container.get("knex");
+  if (typeof permission === "string") permission = [permission];
+  permission = permission.map((item) => item.toUpperCase());
 
   const getData = (req, res) => {
     const data = req.body;
@@ -54,38 +56,54 @@ module.exports = (route, tableName) => {
       });
   };
 
-  // Listagem
-  route.get("/", (req, res) => {
-    sendDbResult(res, knex(tableName).select("*"));
-  });
+  const veriryPermissions = (permission) => {
+    permission.forEach((element) => {
+      if (!["ALL", "GET", "POST", "DELETE"].includes(element)) return false;
+      return true;
+    });
+  };
 
-  // Count
-  route.get("/count", (req, res) => {
-    sendDbResult(res, knex(tableName).count());
-  });
+  if (!permission || veriryPermissions(permission))
+    throw "Invalid permission type";
 
-  // Pegar elemento com id
-  route.get("/:id", (req, res) => {
-    const id = getParam(req, res, "id");
-    sendDbResult(res, knex(tableName).where({ id }).select());
-  });
+  if (permission.includes("ALL") || permission.inclues("GET")) {
+    // Listagem
+    route.get("/", (req, res) => {
+      sendDbResult(res, knex(tableName).select("*"));
+    });
 
-  // Criar
-  route.post("/", (req, res) => {
-    const data = getData(req, res);
-    sendDbResult(res, knex(tableName).insert(data));
-  });
+    // Count
+    route.get("/count", (req, res) => {
+      sendDbResult(res, knex(tableName).count());
+    });
 
-  // Editar
-  route.patch("/:id", (req, res) => {
-    const data = getData(req, res);
-    const id = getParam(req, res, "id");
-    sendDbResult(res, knex(tableName).where("id", id).select().update(data));
-  });
+    // Pegar elemento com id
+    route.get("/:id", (req, res) => {
+      const id = getParam(req, res, "id");
+      sendDbResult(res, knex(tableName).where({ id }).select());
+    });
+  }
 
-  // Remover
-  route.delete("/:id", (req, res) => {
-    const id = getParam(req, res, "id");
-    sendDbResult(res, knex(tableName).where("id", id).select().del());
-  });
+  if (permission.includes("ALL") || permission.inclues("POST")) {
+    // Criar
+    route.post("/", (req, res) => {
+      const data = getData(req, res);
+      sendDbResult(res, knex(tableName).insert(data));
+    });
+
+    // Editar
+    route.patch("/:id", (req, res) => {
+      const data = getData(req, res);
+      const id = getParam(req, res, "id");
+      sendDbResult(res, knex(tableName).where("id", id).select().update(data));
+    });
+  }
+
+  if (permission.includes("ALL") || permission.inclues("DELETE")) {
+    // Remover
+    route.delete("/:id", (req, res) => {
+      const id = getParam(req, res, "id");
+      sendDbResult(res, knex(tableName).where("id", id).select().del());
+    });
+  }
 };
