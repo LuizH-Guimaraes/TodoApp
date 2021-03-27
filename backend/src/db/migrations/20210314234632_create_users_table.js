@@ -1,8 +1,8 @@
 exports.up = function (knex) {
   return knex.schema.createTable("tb_users", (table) => {
     table.increments("id").primary();
-    table.string("username", 30).notNullable();
-    table.string("email", 150).notNullable();
+    table.string("username", 30).notNullable().unique();
+    table.string("email", 150).notNullable().unique();
     table.string("password", 255).notNullable();
     table.string("name", 255).notNullable();
     table.boolean("is_admin").notNullable().defaultTo(false);

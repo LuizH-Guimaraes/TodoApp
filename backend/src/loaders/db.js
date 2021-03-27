@@ -4,6 +4,6 @@ const dbConfig = require("../config/db.js");
 
 module.exports = () => {
   console.log("Connecting in database");
-  const dbInstance = knex(dbConfig);
+  const dbInstance = knex(dbConfig); // Production
   Container.set("knex", dbInstance);
 };

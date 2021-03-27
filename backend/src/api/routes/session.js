@@ -1,4 +1,5 @@
 const { Router } = require("express");
+const { Container } = require("typedi");
 const sessionService = require("../../services/session");
 
 module.exports = (app) => {
@@ -19,7 +20,8 @@ module.exports = (app) => {
         })
         .status(400);
 
-    const sessionServiceInstance = new sessionService();
+    const knex = Container.get("knex");
+    const sessionServiceInstance = new sessionService(knex);
     const token = await sessionServiceInstance.login(data);
 
     if (!token) {

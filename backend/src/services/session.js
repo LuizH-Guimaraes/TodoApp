@@ -1,5 +1,5 @@
-const { Container } = require("typedi");
 const jwt = require("jsonwebtoken");
+const { Container } = require("typedi");
 const { session } = require("../config");
 
 class sessionService {
