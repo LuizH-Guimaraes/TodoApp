@@ -13,7 +13,7 @@ class CrudService {
     return await this.knex(this.tableName).select("*");
   }
   async create(data) {
-    return await this.knex(this.tableName).create(data);
+    return await this.knex(this.tableName).insert(data);
   }
   async remove(id) {
     return await this.knex(this.tableName).where({ id }).select().delete();
