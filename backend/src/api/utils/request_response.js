@@ -1,4 +1,4 @@
-class Utils {
+class RequestResponse {
   constructor(tableName) {
     this.tableName = tableName;
   }
@@ -27,22 +27,10 @@ class Utils {
     return param;
   }
 
-  sendDbResult(res, promise, callback = undefined) {
+  sendDbResult(res, promise) {
     promise
       .then((result) => {
-        if (callback) {
-          callback()
-            .then((result) => res.json({ error: false, message: "ok", result }))
-            .catch((err) => {
-              res.json({
-                error: true,
-                message: `[GENERIC CRUD - ${this.tableName}] Error`,
-                result: err,
-              });
-            });
-        } else {
-          res.json({ error: false, message: "ok", result });
-        }
+        res.json({ error: false, message: "ok", result });
       })
       .catch((err) => {
         console.log("catch", err);
@@ -55,4 +43,4 @@ class Utils {
   }
 }
 
-module.exports = Utils;
+module.exports = RequestResponse;

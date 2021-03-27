@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const { Container } = require("typedi");
+const PasswordUtilities = require("../services/password");
 const { session } = require("../config");
 
 class sessionService {
@@ -12,7 +13,11 @@ class sessionService {
       .select()
       .where({ email: data.email })
       .first();
-    if (user && data && user.password === data.password) {
+    if (
+      user &&
+      data &&
+      PasswordUtilities.verify(data.password, user.password)
+    ) {
       const token = jwt.sign({ id: user.id }, session.secret);
       return token;
     } else {

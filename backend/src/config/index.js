@@ -15,4 +15,7 @@ module.exports = {
   session: {
     secret: process.env.JWT_SECRET,
   },
+  users: {
+    password_secret: process.env.PASSWORD_SECRET,
+  },
 };

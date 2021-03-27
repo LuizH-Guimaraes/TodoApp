@@ -1,46 +1,38 @@
 const { Router } = require("express");
+const RequestResponse = require("../utils/request_response");
 const CrudService = require("../../services/crud");
-const Utils = require("./utils");
+const CRUDTemplate = require("../utils/template");
+const PasswordUtilities = require("../../services/password");
 
 module.exports = (app) => {
   const route = Router();
+
   app.use("/users", route);
 
+  // Init
   const tableName = "tb_users";
+  const requestResponse = new RequestResponse(tableName);
   const crudService = new CrudService(tableName);
-  const utils = new Utils(tableName);
 
-  // route.get("/", async (req, res) => {
-  //   return res.json(await crudService.list()).status(200);
-  //   sendDbResult(res, );
-  // });
+  // Template
+  CRUDTemplate(crudService, route, tableName, ["GET", "DELETE", "PATCH"]);
 
-  route.get("/", async (req, res) => {
-    return utils.sendDbResult(res, crudService.list());
-  });
-
-  route.get("/count", async (req, res) => {
-    return utils.sendDbResult(res, crudService.count());
-  });
-
-  route.get("/:id", (req, res) => {
-    const id = utils.getParam(req, res, "id");
-    return utils.sendDbResult(res, crudService.get(id));
-  });
-
-  route.post("/", (req, res) => {
-    const data = utils.getData(req, res);
-    return utils.sendDbResult(res, crudService.create(data));
-  });
-
-  route.post("/:id", (req, res) => {
-    const id = utils.getParam("id");
-    const data = utils.getData(req, res);
-    return utils.sendDbResult(res, crudService.edit(data, id));
-  });
-
-  route.delete("/:id", (req, res) => {
-    const id = utils.getParam(req, res, "id");
-    return utils.sendDbResult(res, crudService.delete(id));
+  // Specific post request
+  route.post("/", async (req, res) => {
+    const data = requestResponse.getData(req, res);
+    // Crypt password
+    const hashedPassword = PasswordUtilities.hash(data.password)
+      .then((response) => response)
+      .catch((err) => {
+        res.json({
+          error: true,
+          message: `[PASSWORD - ${tableName}] Error`,
+          result: err,
+        });
+      });
+    return requestResponse.sendDbResult(
+      res,
+      crudService.create({ ...data, password: hashedPassword })
+    );
   });
 };
