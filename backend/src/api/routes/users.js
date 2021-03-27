@@ -1,10 +1,11 @@
 const { Router } = require("express");
-const { Container } = require("typedi");
-const genericCrud = require("../../services/crud");
+const CrudService = require("../../services/crud");
 
 module.exports = (app) => {
   const route = Router();
   app.use("/users", route);
-  const knex = Container.get("knex");
-  genericCrud(knex, route, "tb_users", "ALL");
+  const CrudServiceInstance = new CrudService("tb_users");
+  route.get("/", async (req, res) => {
+    return res.json(await CrudServiceInstance.list()).status(200);
+  });
 };
