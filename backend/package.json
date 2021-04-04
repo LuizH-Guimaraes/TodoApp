@@ -6,7 +6,9 @@
   "scripts": {
     "test": "jest",
     "start": "nodemon src/app.js",
-    "knex:migrate": "cd src && env $(cat ../.env) knex migrate:latest --knexfile config/db.js"
+    "knex:migrate": "cd src && env $(cat ../.env) knex migrate:latest --knexfile config/db.js",
+    "knex:migrate:make": "cd src && env $(cat ../.env) knex migrate:make --knexfile config/db.js",
+    "knex:migrate:down": "cd src && env $(cat ../.env) knex migrate:down --knexfile config/db.js"
   },
   "keywords": [],
   "author": "",
