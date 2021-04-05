@@ -2,13 +2,14 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "./src/app.ts",
   "scripts": {
+    "dev": "nodemon src/server.ts",
+    "build": "sucrase ./src -d ./dist --transforms typescript,imports",
     "test": "jest",
-    "start": "nodemon src/app.js",
-    "knex:migrate": "cd src && env $(cat ../.env) knex migrate:latest --knexfile config/db.js",
-    "knex:migrate:make": "cd src && env $(cat ../.env) knex migrate:make --knexfile config/db.js",
-    "knex:migrate:down": "cd src && env $(cat ../.env) knex migrate:down --knexfile config/db.js"
+    "knex:migrate": "cd src && env $(cat ../.env) knex migrate:latest --knexfile config/db.ts",
+    "knex:migrate:make": "cd src && env $(cat ../.env) knex migrate:make --knexfile config/db.ts",
+    "knex:migrate:down": "cd src && env $(cat ../.env) knex migrate:down --knexfile config/db.ts"
   },
   "keywords": [],
   "author": "",

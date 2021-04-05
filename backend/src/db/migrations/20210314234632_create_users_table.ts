@@ -1,4 +1,6 @@
-exports.up = function (knex) {
+import type { Knex } from "knex";
+
+exports.up = (knex: Knex): Promise<void> => {
   return knex.schema.createTable("tb_users", (table) => {
     table.increments("id").primary();
     table.string("username", 30).notNullable().unique();
@@ -13,6 +15,6 @@ exports.up = function (knex) {
   });
 };
 
-exports.down = function (knex) {
+exports.down = (knex: Knex): Promise<void> => {
   return knex.schema.dropTable("tb_users");
 };

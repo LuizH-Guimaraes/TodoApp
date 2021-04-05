@@ -1,8 +1,8 @@
-const jwt = require("jsonwebtoken");
-const { session } = require("../config");
+import jwt from "jsonwebtoken";
+import { session } from "../config";
 
 // Verify authentication
-module.exports = (req, res, next) => {
+export default (req, res, next) => {
   const authorizationField = req.headers["authorization"];
 
   if (!authorizationField)
@@ -13,10 +13,7 @@ module.exports = (req, res, next) => {
     });
   const token = authorizationField.split("Bearer ")[1];
   jwt.verify(token, session.secret, (err, decoded) => {
-    if (err)
-      return res
-        .status(500)
-        .json({ auth: false, message: "Failed to authenticate token." });
+    if (err) return res.status(500).json({ auth: false, message: "Failed to authenticate token." });
 
     req.userId = decoded.id;
     next();

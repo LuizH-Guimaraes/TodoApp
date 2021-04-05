@@ -1,9 +1,9 @@
-const dotenv = require("dotenv");
+import dotenv from "dotenv";
 
 dotenv.config();
 
-module.exports = {
-  port: process.env.PORT,
+export default {
+  port: parseInt(process.env.PORT, 10),
   environment: process.env.ENVIRONMENT,
   api: {
     prefix: process.env.API_PREFIX,
